@@ -21,4 +21,5 @@ urlpatterns = [
     url('', include('users.urls')),
     url('', include('articles.urls')),
     url('', include('tags.urls')),
+    url('', include('comments.urls')),
 ]
