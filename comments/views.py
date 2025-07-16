@@ -16,12 +16,6 @@ class ListComment(APIView):
             return Article.objects.get(slug=slug)
         except Article.DoesNotExist:
             raise Http404("Article not found")
-    
-    def get_author(self, pk, format=None):
-        try:
-            return User.objects.get(pk=pk)
-        except User.DoesNotExist:
-            raise Http404("Author not found")
         
     def get(self, request, slug, format=None):
         article = self.get_article(slug)
@@ -31,9 +25,9 @@ class ListComment(APIView):
     
     def post(self, request, slug, format=None):
         article = self.get_article(slug)
-        author = self.get_author(request.data.get("author_id"))
-        serializer = CommentSerializer(data=request.data)
+        data = request.data.get("comment", {})
+        serializer = CommentSerializer(data=data)
         if serializer.is_valid():
-            serializer.save(article=article, author=author)
+            serializer.save(article=article, author=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

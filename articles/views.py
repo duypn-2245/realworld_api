@@ -1,3 +1,4 @@
+from rest_framework import permissions
 from rest_framework import status
 from django.http import Http404
 from rest_framework.views import APIView
@@ -9,14 +10,18 @@ class ArticleList(APIView):
     """
     List all articles, or create a new article.
     """
+
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
     def get(self, request, format=None):
         articles = Article.objects.select_related('author').all()
         serializer = ArticleSerializer(articles, many=True)
-        return Response({'articles': serializer.data, 
-                         'articlesCount': Article.objects.count()})
+        return Response({"articles": serializer.data, 
+                         "articlesCount": Article.objects.count()})
     
     def post(self, request, format=None):
-        serializer = ArticleSerializer(data=request.data)
+        data = request.data.get("article", {})
+        serializer = ArticleSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -26,6 +31,9 @@ class ArticleDetail(APIView):
     """
     Retrieve, update or delete article.
     """
+
+    permission_classes = [permissions.IsAuthenticated]
+
     def get_article(self, slug, format=None):
         try:
             return Article.objects.get(slug=slug)
@@ -35,11 +43,12 @@ class ArticleDetail(APIView):
     def get(self, request, slug):
         article = self.get_article(slug)
         serializer = ArticleSerializer(article)
-        return Response({'article': serializer.data})
+        return Response({"article": serializer.data})
     
     def put(self, request, slug, format=None):
         article = self.get_article(slug)
-        serializer = ArticleSerializer(article, data=request.data)
+        data = request.data.get("article", {})
+        serializer = ArticleSerializer(article, request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

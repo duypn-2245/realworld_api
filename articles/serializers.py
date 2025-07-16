@@ -1,12 +1,12 @@
 from rest_framework import serializers
 from articles.models import Article
-from users.serializers import UserSerializer
+from users.serializers.user_info_serializers import UserInfoSerializer
 
 class ArticleSerializer(serializers.ModelSerializer):
 	createdAt = serializers.SerializerMethodField()
 	updatedAt = serializers.SerializerMethodField()
 	tagList = serializers.SerializerMethodField()
-	author = UserSerializer(read_only=True)
+	author = UserInfoSerializer(read_only=True)
 
 	class Meta:
 		model = Article
