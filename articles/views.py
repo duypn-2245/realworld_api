@@ -1,3 +1,4 @@
+from rest_framework import permissions
 from rest_framework import status
 from django.http import Http404
 from rest_framework.views import APIView
@@ -9,6 +10,9 @@ class ArticleList(APIView):
     """
     List all articles, or create a new article.
     """
+
+    # permission_classes = [permissions.IsAuthenticated]
+
     def get(self, request, format=None):
         articles = Article.objects.select_related('author').all()
         serializer = ArticleSerializer(articles, many=True)
@@ -26,6 +30,9 @@ class ArticleDetail(APIView):
     """
     Retrieve, update or delete article.
     """
+
+    # permission_classes = [permissions.IsAuthenticated]
+
     def get_article(self, slug, format=None):
         try:
             return Article.objects.get(slug=slug)

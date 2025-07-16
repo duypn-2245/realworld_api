@@ -32,8 +32,8 @@ class ListComment(APIView):
     def post(self, request, slug, format=None):
         article = self.get_article(slug)
         author = self.get_author(request.data.get("author_id"))
-        serializer = CommentSerializer(data=request.data)
+        serializer = CommentSerializer(data=self.request.data)
         if serializer.is_valid():
-            serializer.save(article=article, author=author)
+            serializer.save(article=article, author=self.request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
