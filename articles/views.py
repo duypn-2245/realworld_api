@@ -10,9 +10,10 @@ class ArticleList(APIView):
     List all articles, or create a new article.
     """
     def get(self, request, format=None):
-        articles = Article.objects.all()
+        articles = Article.objects.select_related('author').all()
         serializer = ArticleSerializer(articles, many=True)
-        return Response(serializer.data)
+        return Response({'articles': serializer.data, 
+                         'articlesCount': Article.objects.count()})
     
     def post(self, request, format=None):
         serializer = ArticleSerializer(data=request.data)
@@ -25,26 +26,21 @@ class ArticleDetail(APIView):
     """
     Retrieve, update or delete article.
     """
-    def get_object(self, slug, format=None):
+    def get_article(self, slug, format=None):
         try:
             return Article.objects.get(slug=slug)
         except Article.DoesNotExist:
             raise Http404
     
     def get(self, request, slug):
-        article = self.get_object(slug)
+        article = self.get_article(slug)
         serializer = ArticleSerializer(article)
-        return Response(serializer.data)
+        return Response({'article': serializer.data})
     
     def put(self, request, slug, format=None):
-        article = self.get_object(slug)
+        article = self.get_article(slug)
         serializer = ArticleSerializer(article, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    def delete(self, request, slug):
-        article = self.get_object(slug)
-        article.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -7,21 +7,21 @@ from users.serializers import UserSerializer
 
 class UserDetail(APIView):
     """
-    Retrive , update or delete a user
+    Retrive , update a user
     """
-    def get_object(self, pk, format=None):
+    def get_user(self, username, format=None):
         try:
-            return User.objects.get(pk=pk)
+            return User.objects.get(username=username)
         except User.DoesNotExist:
             raise Http404
 
-    def get(self, request, pk, format=None):
-        user = self.get_object(pk=pk)
+    def get(self, request, username, format=None):
+        user = self.get_user(username)
         serializer = UserSerializer(user)
         return Response(serializer.data)
     
-    def put(self, request, pk, format=None):
-        user = self.get_object(pk)
+    def put(self, request, username, format=None):
+        user = self.get_user(username)
         serializer = UserSerializer(user, data=request.data)
         if serializer.is_valid():
             serializer.save()

@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'articles',
-    'tags'
+    'tags',
+    'comments',
 ]
 
 MIDDLEWARE = [
@@ -127,4 +128,5 @@ MIGRATION_MODULES = {
     'users': 'migrations.users',
     'articles': 'migrations.articles',
     'tags': 'migrations.tags',
+    'comments': 'migrations.comments'
 }

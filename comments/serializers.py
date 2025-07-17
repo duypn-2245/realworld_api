@@ -1,23 +1,20 @@
 from rest_framework import serializers
-from articles.models import Article
+from comments.models import Comment
 from users.serializers import UserSerializer
 
-class ArticleSerializer(serializers.ModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
 	createdAt = serializers.SerializerMethodField()
 	updatedAt = serializers.SerializerMethodField()
-	tagList = serializers.SerializerMethodField()
 	author = UserSerializer(read_only=True)
 
 	class Meta:
-		model = Article
-		fields = ['id', 'slug', 'title', 'description', 'body', 'createdAt', 'updatedAt', 'tagList', 'author']
-		read_only_fields = ['slug']
+		model = Comment
+		fields = ['id', 'body', 'createdAt', 'updatedAt', 'author']
+		read_only_fields = ['id', 'createdAt', 'updatedAt']
+
 
 	def get_createdAt(self, obj):
 		return obj.created_at
 	
 	def get_updatedAt(self, obj):
 		return obj.updated_at
-
-	def get_tagList(self, obj):
-		return obj.tag_list
