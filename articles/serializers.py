@@ -1,26 +1,26 @@
 from rest_framework import serializers
-from rest_framework.filters import SearchFilter
 from articles.models import Article
-from users.serializers.user_info_serializers import UserInfoSerializer
+from users.serializers.profile_serializer import ProfileSerializer
 
 class ArticleSerializer(serializers.ModelSerializer):
-	createdAt = serializers.SerializerMethodField()
-	updatedAt = serializers.SerializerMethodField()
-	tagList = serializers.SerializerMethodField()
-	author = UserInfoSerializer(read_only=True)
-
-	filter_backends = [SearchFilter]
-	search_fields = ['author']
+	author = ProfileSerializer(read_only=True)
 	class Meta:
 		model = Article
-		fields = ['id', 'slug', 'title', 'description', 'body', 'createdAt', 'updatedAt', 'tagList', 'author']
-		read_only_fields = ['slug']
-
-	def get_createdAt(self, obj):
-		return obj.created_at
+		fields = ["id", "slug", "title", "description", "body", "author", "tag_list"]
+		read_only_fields = ["slug"]
 	
-	def get_updatedAt(self, obj):
-		return obj.updated_at
+	def to_internal_value(self, data):
+		"""
+        Convert incoming 'tagList' to 'tag_list'.
+        """
 
-	def get_tagList(self, obj):
-		return obj.tag_list
+		if "tagList" in data:
+			data["tag_list"] = data.pop("tagList")
+		return super().to_internal_value(data)
+
+	def to_representation(self, instance):
+		representation = super().to_representation(instance)
+		representation["createdAt"] = instance.created_at
+		representation["updatedAt"] = instance.updated_at
+		representation["tagList"] = instance.tag_list
+		return representation
