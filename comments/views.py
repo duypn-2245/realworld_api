@@ -11,8 +11,7 @@ class ListComment(generics.ListCreateAPIView):
 
     def get_queryset(self):
         article = get_object_or_404(Article.objects, slug=self.kwargs["slug"])
-        comments = Comment.objects.filter(article_id=article.id)
-        return comments
+        return article.comments.all()
 
     def list(self, request, *args, **kwargs):
         self.permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -37,9 +36,12 @@ class UpdateDestroyComment(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     
-    def get_object(self):
+    def get_queryset(self):
         article = get_object_or_404(Article.objects, slug=self.kwargs["slug"])
-        comment = get_object_or_404(self.get_queryset(), article_id=article.id, pk=self.kwargs["pk"])
+        return article.comments.all()
+    
+    def get_object(self):
+        comment = get_object_or_404(self.get_queryset(), pk=self.kwargs["pk"])
         self.check_object_permissions(self.request, comment)
         return comment
     
