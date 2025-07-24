@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'comments',
     'rest_framework_simplejwt',
     'django_filters',
+    'user_followings',
 ]
 
 MIDDLEWARE = [
@@ -131,7 +132,8 @@ MIGRATION_MODULES = {
     'users': 'migrations.users',
     'articles': 'migrations.articles',
     'tags': 'migrations.tags',
-    'comments': 'migrations.comments'
+    'comments': 'migrations.comments',
+    'user_followings': 'migrations.user_followings',
 }
 
 REST_FRAMEWORK = {
