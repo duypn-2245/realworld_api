@@ -7,7 +7,7 @@ from .factories import ArticleFactory
 class ListTests(APITestCase):
     def setUp(self):
         self.user = UserFactory()
-        self.url = reverse("articles-create-list")
+        self.url = reverse("v1:articles-create-list")
         ArticleFactory.create_batch(25)
 
     def test_get_articles_without_auth(self):
@@ -35,7 +35,7 @@ class RetrieveUpdateTests(APITestCase):
     def setUp(self):
         self.user = UserFactory()
         self.article = ArticleFactory(title= "This is title of Article",author=self.user)
-        self.url = reverse("article-retrieve-update", kwargs={"slug": self.article.slug})
+        self.url = reverse("v1:article-retrieve-update", kwargs={"slug": self.article.slug})
         self.data = {
             "article": {
                 "title": "This is title of Article Updated",
@@ -88,7 +88,7 @@ class RetrieveUpdateTests(APITestCase):
 class CreateTests(APITestCase):
     def setUp(self):
         self.user = UserFactory()
-        self.url = reverse("articles-create-list")
+        self.url = reverse("v1:articles-create-list")
         self.data = {
             "article": {
                 "title": "This is title of Article",

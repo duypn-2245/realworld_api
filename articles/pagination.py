@@ -25,9 +25,9 @@ class ArticlePagination(PageNumberPagination):
             previous_page = self.page.previous_page_number()
             
         return Response({
-            'articlesCount': self.page.paginator.count,
-            'currentPage': self.page.number,
-            'nextPageNumber': next_page,
-            'previousPageNumber': previous_page,
-            'articles': data
+            "articlesCount": self.page.paginator.count,
+            "currentPage": self.page.number,
+            "nextPageNumber": next_page,
+            "previousPageNumber": previous_page,
+            "articles": data
         })

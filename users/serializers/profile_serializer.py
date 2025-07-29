@@ -8,4 +8,5 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ["email", "bio", "image", "username", "following"]
     
     def get_following(self, obj):
-        return obj.pk in self.context.get("following", [])
+        user_followings = self.context.get("user_following", [])
+        return obj.pk in ( user_following.user_to_id for user_following in user_followings)
