@@ -22,5 +22,8 @@ class ArticleSerializer(serializers.ModelSerializer):
 		representation = super().to_representation(instance)
 		representation["createdAt"] = instance.created_at
 		representation["updatedAt"] = instance.updated_at
-		representation["tagList"] = instance.tag_list
+		representation["tagList"] = representation.pop("tag_list")
+		article_favorites = self.context.get("article_favorites", [])
+		representation["favoritesCount"] = len(instance.article_favorites.all())
+		representation["favorited"] = instance.id in (article_favorite.article_id for article_favorite in article_favorites)
 		return representation

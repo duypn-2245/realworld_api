@@ -1,11 +1,11 @@
 from rest_framework import serializers
 from comments.models import Comment
-from users.serializers.user_info_serializers import UserInfoSerializer
+from users.serializers.profile_serializer import ProfileSerializer
 
 class CommentSerializer(serializers.ModelSerializer):
 	createdAt = serializers.SerializerMethodField()
 	updatedAt = serializers.SerializerMethodField()
-	author = UserInfoSerializer(read_only=True)
+	author = ProfileSerializer(read_only=True)
 
 	class Meta:
 		model = Comment

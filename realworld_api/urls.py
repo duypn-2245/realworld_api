@@ -5,22 +5,23 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 Examples:
 Function views
     1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
+    2. Add a URL to urlpatterns:  url(r"^$", views.home, name="home")
 Class-based views
     1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
+    2. Add a URL to urlpatterns:  url(r"^$", Home.as_view(), name="home")
 Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
-    2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
+    2. Add a URL to urlpatterns:  url(r"^blog/", include("blog.urls"))
 """
 from django.urls import include, path
 # from django.contrib import admin
 
 urlpatterns = [
-    # url(r'^admin/', admin.site.urls),
-    path('', include('users.urls')),
-    path('', include('articles.urls')),
-    path('', include('tags.urls')),
-    path('', include('comments.urls')),
-    path('', include('user_followings.urls')),
+    path("", include("users.urls")),
+    path("api/", include("articles.urls", namespace="v1")),
+    path("api/v2/", include("articles.urls_v2", namespace="v2")),
+    path("", include("tags.urls")),
+    path("", include("comments.urls")),
+    path("", include("user_followings.urls")),
+    path("api/", include("article_favorites.urls")),
 ]

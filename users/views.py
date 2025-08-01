@@ -1,7 +1,6 @@
 from rest_framework import permissions, generics
 from rest_framework import status
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
 from .models import User
 from .serializers import UserInfoSerializer, RegisterSerilizer, ProfileSerializer
 class Register(generics.CreateAPIView):
@@ -39,20 +38,16 @@ class Profile(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ProfileSerializer
     queryset = User.objects.all()
+    lookup_field = "username"
 
-    def get_following(self):
+    def get_user_following(self):
         user = self.request.user
         if user.id is not None:
-            return user.following.all()
+            return user.following_relations.all()
         return []
-
-    def get_object(self):
-        queryset = self.get_queryset()
-        user = get_object_or_404(queryset, username=self.kwargs["username"])
-        return user
 
     def retrieve(self, request, *args, **kwargs):
         serializer = self.get_serializer(request.user)
         user = self.get_object()
-        serializer = self.get_serializer(user, context={"following": self.get_following()})
+        serializer = self.get_serializer(user, context={"user_following": self.get_user_following()})
         return Response({"user": serializer.data})
